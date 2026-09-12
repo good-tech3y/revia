@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #211c17;
+  --color-paper: #faf6f1;
+  --color-surface: #ffffff;
+  --color-clay: #c1552e;
+  --color-clay-dark: #a3441f;
+  --color-sage: #5c6b57;
+  --color-stone: #8a8074;
+  --color-stone-light: #e7e1d8;
+
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+
+  --radius-card: 1.25rem;
+}
+
+body {
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+}

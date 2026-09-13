@@ -17,19 +17,22 @@ export async function GET(
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "#c1552e",
-          borderRadius: dimension * 0.2,
+          background: "#191512",
+          borderRadius: dimension * 0.22,
         }}
       >
         <div
           style={{
-            fontSize: dimension * 0.55,
-            fontWeight: 700,
-            color: "#faf6f1",
+            display: "flex",
+            fontSize: dimension * 0.19,
+            fontWeight: 800,
             fontFamily: "sans-serif",
+            letterSpacing: "-0.02em",
+            color: "#faf6f1",
           }}
         >
-          R
+          revi
+          <span style={{ color: "#c1552e" }}>a</span>
         </div>
       </div>
     ),

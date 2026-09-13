@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getProfile, listResources } from "@/lib/storage";
-import { InstallIcon } from "@/components/install-icon";
 import { SideMenu } from "@/components/side-menu";
 import { ResourceCard } from "@/components/resource-card";
 import { MoreCard } from "@/components/more-card";
@@ -48,10 +47,7 @@ export default function HomePage() {
     <div className="mx-auto min-h-screen max-w-md sm:max-w-2xl lg:max-w-4xl">
       <header className="flex items-center justify-between px-6 py-4">
         <Wordmark className="text-2xl" />
-        <div className="flex items-center gap-1">
-          <InstallIcon />
-          <SideMenu />
-        </div>
+        <SideMenu />
       </header>
 
       {toastMessage && <SmartToast message={toastMessage} onDone={() => setToastMessage(null)} />}

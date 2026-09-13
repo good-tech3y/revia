@@ -7,8 +7,17 @@ import { useLanguage } from "@/lib/language-context";
 
 export function SideMenu() {
   const [open, setOpen] = useState(false);
+  const [showInstructions, setShowInstructions] = useState(false);
   const { canInstall, installed, promptInstall } = useInstall();
   const { t } = useLanguage();
+
+  const handleInstallClick = async () => {
+    if (canInstall) {
+      await promptInstall();
+    } else {
+      setShowInstructions((prev) => !prev);
+    }
+  };
 
   return (
     <>
@@ -23,7 +32,7 @@ export function SideMenu() {
       {open && (
         <div className="fixed inset-0 z-50">
           <div className="absolute inset-0 bg-ink/40" onClick={() => setOpen(false)} />
-          <div className="absolute right-0 top-0 flex h-full w-72 flex-col bg-paper px-6 py-8 shadow-xl">
+          <div className="absolute right-0 top-0 flex h-full w-72 flex-col overflow-y-auto bg-paper px-6 py-8 shadow-xl">
             <div className="flex items-center justify-between">
               <span className="text-lg font-black tracking-tight text-ink">revia</span>
               <button onClick={() => setOpen(false)} aria-label="Close menu" className="text-2xl text-stone">×</button>
@@ -34,10 +43,19 @@ export function SideMenu() {
               <Link href="/search" onClick={() => setOpen(false)} className="rounded-xl px-3 py-3 text-base font-medium text-ink hover:bg-stone-light">{t("nav.search")}</Link>
               <Link href="/profile" onClick={() => setOpen(false)} className="rounded-xl px-3 py-3 text-base font-medium text-ink hover:bg-stone-light">{t("nav.profile")}</Link>
               <Link href="/about" onClick={() => setOpen(false)} className="rounded-xl px-3 py-3 text-base font-medium text-ink hover:bg-stone-light">{t("nav.about")}</Link>
-              {canInstall && !installed && (
-                <button onClick={() => promptInstall()} className="mt-2 rounded-xl bg-clay px-3 py-3 text-left text-base font-medium text-white">
-                  {t("nav.install")}
-                </button>
+
+              {!installed && (
+                <div className="mt-2">
+                  <button onClick={handleInstallClick} className="w-full rounded-xl bg-clay px-3 py-3 text-left text-base font-medium text-white">
+                    {t("nav.install")}
+                  </button>
+                  {showInstructions && (
+                    <div className="mt-2 space-y-1 rounded-xl bg-stone-light p-3 text-xs text-stone">
+                      <p>Android Chrome: tap the ⋮ menu, then "Install app."</p>
+                      <p>iPhone Safari: tap the Share icon, then "Add to Home Screen."</p>
+                    </div>
+                  )}
+                </div>
               )}
             </nav>
             <div className="border-t border-stone-light pt-4">

@@ -7,17 +7,8 @@ import { useLanguage } from "@/lib/language-context";
 
 export function SideMenu() {
   const [open, setOpen] = useState(false);
-  const [showInstructions, setShowInstructions] = useState(false);
   const { canInstall, installed, promptInstall } = useInstall();
   const { t } = useLanguage();
-
-  const handleInstallClick = async () => {
-    if (canInstall) {
-      await promptInstall();
-    } else {
-      setShowInstructions((prev) => !prev);
-    }
-  };
 
   return (
     <>
@@ -44,18 +35,10 @@ export function SideMenu() {
               <Link href="/profile" onClick={() => setOpen(false)} className="rounded-xl px-3 py-3 text-base font-medium text-ink hover:bg-stone-light">{t("nav.profile")}</Link>
               <Link href="/about" onClick={() => setOpen(false)} className="rounded-xl px-3 py-3 text-base font-medium text-ink hover:bg-stone-light">{t("nav.about")}</Link>
 
-              {!installed && (
-                <div className="mt-2">
-                  <button onClick={handleInstallClick} className="w-full rounded-xl bg-clay px-3 py-3 text-left text-base font-medium text-white">
-                    {t("nav.install")}
-                  </button>
-                  {showInstructions && (
-                    <div className="mt-2 space-y-1 rounded-xl bg-stone-light p-3 text-xs text-stone">
-                      <p>Android Chrome: tap the ⋮ menu, then "Install app."</p>
-                      <p>iPhone Safari: tap the Share icon, then "Add to Home Screen."</p>
-                    </div>
-                  )}
-                </div>
+              {!installed && canInstall && (
+                <button onClick={() => promptInstall()} className="mt-2 w-full rounded-xl bg-clay px-3 py-3 text-left text-base font-medium text-white">
+                  {t("nav.install")}
+                </button>
               )}
             </nav>
             <div className="border-t border-stone-light pt-4">

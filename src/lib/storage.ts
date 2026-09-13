@@ -52,3 +52,12 @@ export async function deleteResource(id: string) {
   const db = await getDB();
   await db.delete("resources", id);
 }
+
+export async function deleteAllData() {
+  const db = await getDB();
+  await Promise.all([
+    db.clear("profile"),
+    db.clear("spaces"),
+    db.clear("resources"),
+  ]);
+}

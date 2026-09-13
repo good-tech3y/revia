@@ -1,11 +1,6 @@
 import Link from "next/link";
+import { TYPE_LABELS } from "@/lib/resource-types";
 import type { Resource } from "@/lib/types";
-
-const TYPE_LABELS: Record<string, string> = {
-  video: "Video", article: "Article", documentation: "Docs", course: "Course",
-  research: "Research", social_post: "Post", tool: "Tool", product: "Product",
-  website: "Website", other: "Saved",
-};
 
 export function ResourceCard({ resource }: { resource: Resource }) {
   return (

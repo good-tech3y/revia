@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import { RegisterServiceWorker } from "@/components/register-sw";
+import { InstallProvider } from "@/lib/install-context";
+import { LanguageProvider } from "@/lib/language-context";
 import "./globals.css";
 
 const jakarta = Plus_Jakarta_Sans({
@@ -22,7 +24,9 @@ export default function RootLayout({
     <html lang="en" className={jakarta.variable}>
       <body className="font-sans antialiased">
         <RegisterServiceWorker />
-        {children}
+        <InstallProvider>
+          <LanguageProvider>{children}</LanguageProvider>
+        </InstallProvider>
       </body>
     </html>
   );

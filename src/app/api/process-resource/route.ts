@@ -3,14 +3,18 @@ import { Agent, tool } from "@strands-agents/sdk";
 import { OpenAIModel } from "@strands-agents/sdk/models/openai";
 import { z } from "zod";
 
+export const maxDuration = 30;
+
+const LANGUAGE_NAMES: Record<string, string> = { en: "English", es: "Spanish", fr: "French" };
+
 const ResourceDecisionSchema = z.object({
   title: z.string().max(120).describe("A clear, concise title."),
   description: z.string().max(220).describe("A short, factual one to two sentence description."),
   resourceType: z.enum(["video","article","documentation","course","research","social_post","tool","product","website","other"]),
   spaceName: z.string().max(40).describe("Reuse an existing Space if one fits, otherwise propose a short new name."),
   tags: z.array(z.string()).max(5),
-  thumbnailUrl: z.string().url().nullable().describe("Copy the image field from fetch_resource exactly if one was found, otherwise null. Never invent one."),
   reasoning: z.string().max(200),
+  thumbnailUrl: z.string().url().nullable().describe("Copy the image field from fetch_resource exactly if one was found, otherwise null. Never invent one."),
 });
 
 async function fetchWithTimeout(url: string, options: RequestInit = {}, timeoutMs = 8000): Promise<Response> {
@@ -72,7 +76,7 @@ export async function POST(req: NextRequest) {
   const { url, spaces, profile } = body as {
     url: string;
     spaces: { id: string; name: string }[];
-    profile: { userType: string; contextTags: string[] } | null;
+    profile: { userType: string; contextTags: string[]; language?: string } | null;
   };
   if (!url) return NextResponse.json({ error: "Missing url" }, { status: 400 });
 
@@ -90,16 +94,17 @@ export async function POST(req: NextRequest) {
   const model = new OpenAIModel({
     api: "chat",
     apiKey: process.env.GROQ_API_KEY,
-    clientConfig: {
-      baseURL: "https://api.groq.com/openai/v1",
-    },
+    clientConfig: { baseURL: "https://api.groq.com/openai/v1" },
     modelId: "openai/gpt-oss-20b",
   });
+
+  const languageName = LANGUAGE_NAMES[profile?.language ?? "en"] ?? "English";
 
   const agent = new Agent({
     model,
     systemPrompt: `You are Revia's resource assistant. User context: ${profile ? `${profile.userType}, interested in ${profile.contextTags.join(", ") || "general topics"}.` : "unknown."}
-Always call fetch_resource first. Call list_spaces before deciding. Never invent facts. If the fetch failed, say so in the description.`,
+Write the title, description, space name, tags, and reasoning in ${languageName}, written naturally for a native speaker, not a literal word-for-word translation.
+Always call fetch_resource first. Call list_spaces before deciding. Never invent facts. Copy the image field from fetch_resource into thumbnailUrl exactly if present, otherwise null, never invent one. If the fetch failed, say so in the description.`,
     tools: [fetchResourceTool, listSpacesTool],
     structuredOutputSchema: ResourceDecisionSchema,
   });

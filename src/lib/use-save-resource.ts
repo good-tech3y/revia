@@ -60,7 +60,7 @@ export function useSaveResource() {
         body: JSON.stringify({
           url: trimmedUrl,
           spaces,
-          profile: profile ? { userType: profile.userType, contextTags: profile.contextTags } : null,
+          profile: profile ? { userType: profile.userType, contextTags: profile.contextTags, language: profile.language } : null,
         }),
         signal: controller.signal,
       });
@@ -72,9 +72,7 @@ export function useSaveResource() {
       clearInterval(timer);
       setCompletedSteps(PROCESSING_STEPS.slice(0, PROCESSING_STEPS.length - 1));
 
-      let space: Space | undefined = spaces.find(
-        (s) => s.name.toLowerCase() === decision.spaceName.toLowerCase()
-      );
+      let space: Space | undefined = spaces.find((s) => s.name.toLowerCase() === decision.spaceName.toLowerCase());
       if (!space) {
         space = { id: crypto.randomUUID(), name: decision.spaceName, createdBy: "agent" };
         await saveSpace(space);
@@ -96,9 +94,7 @@ export function useSaveResource() {
 
       const allResources = await listResources();
       const connection = findConnection(savedRecord, allResources);
-      if (connection) {
-        sessionStorage.setItem("revia:notification", connection.reason);
-      }
+      if (connection) sessionStorage.setItem("revia:notification", connection.reason);
 
       setCompletedSteps([...PROCESSING_STEPS]);
       await new Promise((r) => setTimeout(r, 400));

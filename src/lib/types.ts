@@ -6,6 +6,7 @@ export interface Profile {
   userType: UserType;
   organizationName?: string;
   contextTags: string[];
+  language?: "en" | "es" | "fr";
 }
 
 export interface Space {

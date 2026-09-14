@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { playChime } from "@/lib/notification-sound";
+import { showSystemNotification } from "@/lib/notify";
 
 export function SmartToast({ message, onDone }: { message: string; onDone: () => void }) {
   const [visible, setVisible] = useState(false);
@@ -10,10 +11,8 @@ export function SmartToast({ message, onDone }: { message: string; onDone: () =>
     const raf = requestAnimationFrame(() => setVisible(true));
     playChime();
 
-    if (document.hidden && typeof Notification !== "undefined" && Notification.permission === "granted") {
-      try {
-        new Notification("Revia", { body: message });
-      } catch {}
+    if (document.hidden) {
+      showSystemNotification("Revia", message);
     }
 
     const timer = setTimeout(() => {

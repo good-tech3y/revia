@@ -7,6 +7,7 @@ import { getProfile, deleteAllData } from "@/lib/storage";
 import { useLanguage } from "@/lib/language-context";
 import { LANGUAGES } from "@/lib/i18n";
 import { playChime } from "@/lib/notification-sound";
+import { showSystemNotification } from "@/lib/notify";
 import type { Profile } from "@/lib/types";
 
 export default function ProfilePage() {
@@ -30,11 +31,7 @@ export default function ProfilePage() {
 
   const sendTestNotification = () => {
     playChime();
-    if (typeof Notification !== "undefined" && Notification.permission === "granted") {
-      try {
-        new Notification("Revia", { body: "This is what a real connection notification looks like." });
-      } catch {}
-    }
+    showSystemNotification("Revia", "This is what a real connection notification looks like.");
   };
 
   const handleDeleteAll = async () => {
